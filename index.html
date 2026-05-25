@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Text Encryption App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; border: none; background: #5c67f2; color: white; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #4a54e1; }
+        .output { margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Text Encryptor/Decryptor</h2>
+    <label>Password:</label>
+    <input type="password" id="password" placeholder="Enter secret password">
+
+    <label>Text:</label>
+    <textarea id="text" rows="4" placeholder="Enter text to encrypt/decrypt"></textarea>
+
+    <button onclick="encrypt()">Encrypt</button>
+    <button onclick="decrypt()">Decrypt</button>
+
+    <div class="output" id="output">Result will appear here...</div>
+</div>
+
+<script>
+    async function encrypt() {
+        const password = document.getElementById('password').value;
+        const text = document.getElementById('text').value;
+        const response = await fetch('/encrypt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password, text })
+        });
+        const result = await response.json();
+        document.getElementById('output').innerText = result.encrypted_data || result.error;
+    }
+
+    async function decrypt() {
+        const password = document.getElementById('password').value;
+        const text = document.getElementById('text').value;
+        const response = await fetch('/decrypt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password, text })
+        });
+        const result = await response.json();
+        document.getElementById('output').innerText = result.decrypted_text || result.error;
+    }
+</script>
+
+</body>
+</html>
